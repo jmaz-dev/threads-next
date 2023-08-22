@@ -30,6 +30,7 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
  const { startUpload } = useUploadThing("media");
  const pathname = usePathname();
  const route = useRouter();
+
  const form = useForm({
   resolver: zodResolver(UserValidation),
   defaultValues: {

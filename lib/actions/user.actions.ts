@@ -13,6 +13,8 @@ interface Params {
  path: string;
 }
 
+// User Update
+// upsert = update(if exist) and insert(if doesn't exist)
 export async function updateUser({ userId, username, name, bio, image, path }: Params): Promise<void> {
  try {
   connectToDB();
@@ -30,4 +32,17 @@ export async function updateUser({ userId, username, name, bio, image, path }: P
  }
 }
 
-// upsert = update(if exist) and insert(if doesn't exist)
+// User fetch
+export async function fetchUser(userId: string) {
+ try {
+  connectToDB();
+
+  return await User.findOne({ id: userId });
+  //   .populate({
+  //    path: "communities",
+  //    model: Community
+  //   });
+ } catch (error: any) {
+  throw new Error(`Failed to fetch user: ${error?.message}`);
+ }
+}
