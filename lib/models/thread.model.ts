@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+// Dois tipos para popular "User" e "Community"
 const threadSchema = new mongoose.Schema({
  text: { type: String, require: true },
  author: [

@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { usePathname, useRouter } from "next/navigation";
-import ThreadValidation from "@/lib/validations/threads";
+import { ThreadValidation } from "@/lib/validations/threads";
 import { createThread } from "@/lib/actions/thread.actions";
 
 // import { updateUser } from "@/lib/actions/user.actions";

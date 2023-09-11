@@ -11,7 +11,7 @@ interface Params {
  communityId: string | null;
  path: string;
 }
-
+// criar
 export async function createThread({ text, author, communityId, path }: Params): Promise<void> {
  try {
   connectToDB();
@@ -31,7 +31,7 @@ export async function createThread({ text, author, communityId, path }: Params):
   throw new Error("Falha ao criar uma thread: " + error?.message);
  }
 }
-
+// carregar posts
 export async function fetchPosts(pageNumber = 1, pageSize = 20) {
  try {
   connectToDB();
@@ -70,5 +70,71 @@ export async function fetchPosts(pageNumber = 1, pageSize = 20) {
   return { posts, isNext };
  } catch (err) {
   console.error(err);
+ }
+}
+// busca por id
+export async function fetchThreadById(id: string) {
+ connectToDB();
+
+ try {
+  const thread = await Thread.findById(id)
+   .populate({
+    path: "author",
+    model: User,
+    select: "_id id name image",
+   })
+   .populate({
+    path: "children",
+    populate: [
+     {
+      path: "author",
+      model: User,
+      select: "_id id parentId image",
+     },
+     {
+      path: "children",
+      model: Thread,
+      populate: {
+       path: "author",
+       model: User,
+       select: "_id id name parentId image",
+      },
+     },
+    ],
+   })
+   .exec();
+
+  return thread;
+ } catch (error: any) {
+  throw new Error(`Error ao buscar thread: ${error.message}`);
+ }
+}
+
+// postar comentario
+export async function addCommentToThread(threadId: string, commentText: string, userId: string, path: string) {
+ connectToDB();
+
+ try {
+  const originalThread = await Thread.findById(threadId);
+  if (!originalThread) throw new Error("Thread não encontrado");
+
+  const commentThread = new Thread({
+   text: commentText,
+   author: userId,
+   parentId: threadId,
+  });
+
+  // save the new thread
+  const saveCommentThread = await commentThread.save();
+
+  // update original thread to include the comment
+  originalThread.children.push(saveCommentThread._id);
+
+  // save original thread
+  await originalThread.save();
+
+  revalidatePath(path);
+ } catch (error: any) {
+  throw new Error(`Error ao adicionar comentário: ${error.message}`);
  }
 }
