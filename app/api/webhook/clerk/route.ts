@@ -82,6 +82,22 @@ export const POST = async (request: Request) => {
   }
  }
 
+ // Listen organization invitation creation event.
+ // Just to show. You can avoid this or tell people that we can create a new mongoose action and
+ // add pending invites in the database.
+ if (eventType === "organizationInvitation.created") {
+  try {
+   // Resource: https://clerk.com/docs/reference/backend-api/tag/Organization-Invitations#operation/CreateOrganizationInvitation
+   console.log("Invitation created", evnt?.data);
+
+   return NextResponse.json({ message: "Invitation created" }, { status: 201 });
+  } catch (err) {
+   console.log(err);
+
+   return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
+  }
+ }
+
  // Listen organization membership (member invite & accepted) creation
  if (eventType === "organizationMembership.created") {
   try {
