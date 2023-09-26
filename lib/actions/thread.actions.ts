@@ -31,6 +31,7 @@ export async function createThread({ text, author, communityId, path }: Params):
   throw new Error("Falha ao criar uma thread: " + error?.message);
  }
 }
+
 // carregar posts
 export async function fetchPosts(pageNumber = 1, pageSize = 20) {
  try {
@@ -72,6 +73,7 @@ export async function fetchPosts(pageNumber = 1, pageSize = 20) {
   console.error(err);
  }
 }
+
 // busca por id
 export async function fetchThreadById(id: string) {
  connectToDB();
@@ -89,7 +91,7 @@ export async function fetchThreadById(id: string) {
      {
       path: "author",
       model: User,
-      select: "_id id parentId image",
+      select: "_id id name parentId image",
      },
      {
       path: "children",
