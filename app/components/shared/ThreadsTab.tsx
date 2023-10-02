@@ -1,3 +1,4 @@
+import { fetchCommunityPosts } from "@/lib/actions/community.actions";
 import { fetchUserPosts } from "@/lib/actions/user.actions";
 import { redirect } from "next/navigation";
 import React from "react";
@@ -10,7 +11,14 @@ interface Props {
 }
 
 const ThreadsTab = async ({ currentUserId, accountId, accountType }: Props) => {
- let result = await fetchUserPosts(accountId);
+ let result: any;
+
+ if (accountType === "Community") {
+  result = await fetchCommunityPosts(accountId);
+ } else {
+  result = await fetchUserPosts(accountId);
+ }
+
  if (!result) redirect("/");
 
  return (
@@ -25,7 +33,7 @@ const ThreadsTab = async ({ currentUserId, accountId, accountType }: Props) => {
      author={
       accountType === "User"
        ? { name: result.name, image: result.image, id: result.id }
-       : { name: thread.author.name, image: thread.author.image, id: thread.author.id }
+       : { name: thread.author[0].name, image: thread.author[0].image, id: thread.author[0].id }
      }
      community={thread.community}
      createdAt={thread.createdAt}
